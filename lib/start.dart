@@ -1,121 +1,123 @@
+import 'package:draw/draw.dart';
+import 'package:estudos_app/comments.dart';
 import 'package:flutter/material.dart';
-//import 'package:estudos_app/add.dart';
-//import 'package:estudos_app/call.dart';
-import 'package:estudos_app/config.dart';
-import 'package:estudos_app/calendar.dart';
-//import 'package:estudos_app/search.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
-
-
 
 class Start extends StatefulWidget {
+  Start({required this.subreddit});
+
+  final String subreddit;
+
   @override
   _StartState createState() => _StartState();
 }
 
 class _StartState extends State<Start> {
-  String path = '';
-  bool _imageWasPicked = false;
-  File? _fotoMinisterioAtualizada;
+  final posts = <Submission>[];
 
-  void _openFileExplorer() async {
-    FilePickerResult? path =
-      await FilePicker.platform.pickFiles(type: FileType.image);
-    _newPhoto(File(path!.files.first.path!));
+  late Reddit reddit;
+
+  @override
+  void initState() {
+    super.initState();
+    Reddit.createReadOnlyInstance(
+      clientId: '3lGeRnaR6VYInvsFqTIfNA',
+      clientSecret: 'ySO4pDSieFaDCitnbtgqbM5sdEd2Aw',
+      userAgent: 'flutter:reddit_search_gabriel_fonseca:1.0.0',
+    ).then((instance) {
+      reddit = instance;
+      _fetch();
+    });
   }
 
-  void _newPhoto(File perfil) {
-    setState(() {
-      this._fotoMinisterioAtualizada = perfil;
-      _imageWasPicked = true;
+  Future<void> _fetch() async {
+    final stream =
+        reddit.subreddit(widget.subreddit).hot(limit: 16).asBroadcastStream();
+    posts.clear();
+
+    stream.listen((content) {
+      if (content is Submission) {
+        posts.add(content);
+      }
     });
+
+    await stream.last;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Início'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(width: 400.0,height: 30.0,),
-              (!_imageWasPicked
-                  ? Image.asset(
-                'Images/SemFoto.png',
-                height: 200,
-                width: 500,
-              )
-                  : Image.file(_fotoMinisterioAtualizada!, height: 200, width: 500)),
-              SizedBox(width: 400.0,height: 30.0,),
-              SizedBox(
-                width: 400.0,
-                height: 50.0,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Calendar()));
-                    },
-                  child: const Text('Calendário'),
-                ),
-              ),
-              SizedBox(width: 400.0,height: 15.0,),
-              SizedBox(
-                width: 400.0,
-                height: 50.0,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => Options()));
-                    },
-                  child: const Text('Chamada'),
-                ),
-              ),
-              SizedBox(width: 400.0,height: 15.0,),
-              SizedBox(
-                width: 400.0,
-                height: 50.0,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Options()));
-                    },
-                  child: const Text('Localizar'),
-                ),
-              ),
-              SizedBox(width: 400.0,height: 15.0,),
-              SizedBox(
-                width: 400.0,
-                height: 50.0,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Options()));
-                    },
-                  child: const Text('Dados'),
-                ),
-              ),
-              SizedBox(width: 400.0,height: 15.0,),
-              SizedBox(
-                width: 400.0,
-                height: 50.0,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Options()));
-                  },
-                  child: const Text('Configurações'),
-                ),
-              ),
-            ],
-          ),
+        appBar: AppBar(
+          title: Text('Feed'),
+          backgroundColor: Colors.red,
         ),
-      ),
-    );
+        body: RefreshIndicator(
+          onRefresh: () {
+            return _fetch();
+          },
+          color: Colors.red,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: posts.length,
+            itemBuilder: (_, i) => GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Comments(post: posts[i]),
+                  ),
+                );
+              },
+              child: Card(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(children: [
+                    if (posts[i].thumbnail.path != "self" &&
+                        posts[i].thumbnail.path != "default" &&
+                        posts[i].thumbnail.path != "nsfw")
+                      SizedBox(
+                        width: posts[i].data!['thumbnail_width']?.toDouble() ??
+                            0.0,
+                        height: posts[i].data!['thumbnail_width']?.toDouble() ??
+                            0.0,
+                        child: Image.network(posts[i].thumbnail.toString()),
+                      ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                              child: Text(posts[i].title,
+                                  style: new TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400))),
+                          Divider(),
+                          if (!posts[i].isSelf)
+                            Text(posts[i].url.path,
+                                style: new TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic)),
+                          Divider(),
+                          Row(
+                            children: [
+                              Text(posts[i].score.toString()),
+                              SizedBox(width: 100.0),
+                              Text(posts[i].numComments.toString()),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
+          ),
+        ));
   }
 }

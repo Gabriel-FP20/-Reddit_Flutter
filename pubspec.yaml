@@ -25,6 +25,8 @@ environment:
   sdk: ">=2.12.0-213.1.beta <3.0.0"
 
 dependencies:
+  qr_code_scanner: 
+  speech_to_text:
   flutter:
     sdk: flutter
 
@@ -36,6 +38,7 @@ dependencies:
   mask_text_input_formatter:
   intl: ^0.17.0
   flutter_riverpod: ^1.0.3
+  draw: ^1.0.2
 
 dev_dependencies:
   flutter_test:
