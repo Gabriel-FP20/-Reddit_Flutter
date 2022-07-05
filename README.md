@@ -17,7 +17,7 @@ Após configurar o Flutter, siga os passos:
 Realize a clonagem do repositório usando o seguinte link:
 
 ```
-https://github.com/Gabriel-FP20/estudos_app
+https://github.com/Gabriel-FP20/-desafio_FPF_Gabriel_Fonseca
 ```
 
 **Passo 2: Baixando Depedências**
@@ -61,3 +61,7 @@ Ao abrir o aplicativo, digite o subreddit desejado na caixa de texto! Você pode
 Ao clicar no botão "Search", surgirá uma lista com os pots mais relevantes daquele subreddit. 
 
 Ao clicar em um post, você será redirecionado para a tela de postagem e comentários daquele post. 
+
+## Observações
+
+O Reconhecimento de voz está incompleto. Ainda necessita de ajustes no código.
