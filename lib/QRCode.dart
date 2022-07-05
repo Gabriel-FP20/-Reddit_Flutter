@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-
-
 class QRCode extends StatefulWidget {
   const QRCode({Key? key}) : super(key: key);
 
@@ -15,7 +13,6 @@ class QRCode extends StatefulWidget {
 }
 
 class _QRCodeState extends State<QRCode> {
-
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
@@ -40,94 +37,62 @@ class _QRCodeState extends State<QRCode> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-      Expanded(flex: 4, child: _buildQrView(context)),
-      Expanded(
-        flex: 1,
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              if (result != null)
-                Text(
-                    'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-              else
-                const Text('Scan a code'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+          Expanded(flex: 4, child: _buildQrView(context)),
+          Expanded(
+            flex: 1,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          await controller?.toggleFlash();
-                          setState(() {});
-                        },
-                        child: FutureBuilder(
-                          future: controller?.getFlashStatus(),
-                          builder: (context, snapshot) {
-                            return Text('Flash: ${snapshot.data}');
-                          },
-                        )),
+                  if (result != null)
+                    Text(
+                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                  else
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Scan a code',
+                        style: new TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: const EdgeInsets.all(8),
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              await controller?.flipCamera();
+                              setState(() {});
+                            },
+                            child: FutureBuilder(
+                              future: controller?.getCameraInfo(),
+                              builder: (context, snapshot) {
+                                if (snapshot.data != null) {
+                                  return Text(
+                                      'Camera facing ${describeEnum(snapshot.data!)}');
+                                } else {
+                                  return const Text('loading');
+                                }
+                              },
+                            )),
+                      )
+                    ],
                   ),
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          await controller?.flipCamera();
-                          setState(() {});
-                        },
-                        child: FutureBuilder(
-                          future: controller?.getCameraInfo(),
-                          builder: (context, snapshot) {
-                            if (snapshot.data != null) {
-                              return Text(
-                                  'Camera facing ${describeEnum(snapshot.data!)}');
-                            } else {
-                              return const Text('loading');
-                            }
-                          },
-                        )),
-                  )
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await controller?.pauseCamera();
-                      },
-                      child: const Text('pause',
-                          style: TextStyle(fontSize: 20)),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await controller?.resumeCamera();
-                      },
-                      child: const Text('resume',
-                          style: TextStyle(fontSize: 20)),
-                    ),
-                  )
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
-      )
-      ],
-      )
-  );
- }
+        ],
+      ),
+    );
+  }
 
- Widget _buildQrView(BuildContext context) {
+  Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
@@ -156,6 +121,7 @@ class _QRCodeState extends State<QRCode> {
       setState(() {
         result = scanData;
       });
+      Navigator.pop(context, scanData.code);
     });
   }
 
@@ -173,5 +139,4 @@ class _QRCodeState extends State<QRCode> {
     controller?.dispose();
     super.dispose();
   }
-
 }

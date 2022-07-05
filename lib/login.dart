@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:estudos_app/start.dart';
 import 'QRCode.dart';
-import 'VoiceSpeech.dart';
+import 'package:flutter_speech/flutter_speech.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -12,6 +12,7 @@ class _LoginState extends State<Login> {
   bool isButtonActive = true;
   late TextEditingController subredditController;
   String subreddit = '';
+  final _speech = SpeechRecognition();
 
   @override
   void initState() {
@@ -69,9 +70,14 @@ class _LoginState extends State<Login> {
                         iconSize: 30,
                         icon: const Icon(Icons.mic),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => VoiceSpeech(),
-                          ));
+                          _speech.activate("en_US");
+                          _speech.setAvailabilityHandler((bool result) => print("opa deu $result"));
+                          _speech.setRecognitionStartedHandler(() => null);
+                          _speech.setRecognitionResultHandler(print);
+                          _speech.setRecognitionCompleteHandler((res) {
+                            subredditController.text = res;
+                          });
+                          _speech.listen();
                         }),
                   ),
                   SizedBox(width: 20.0),
@@ -107,9 +113,13 @@ class _LoginState extends State<Login> {
                         iconSize: 30,
                         icon: const Icon(Icons.qr_code),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(
                             builder: (context) => QRCode(),
-                          ));
+                          ))
+                              .then((res) {
+                            if (res != null) subredditController = res;
+                          });
                         }),
                   ),
                 ],

@@ -39,6 +39,8 @@ dependencies:
   intl: ^0.17.0
   flutter_riverpod: ^1.0.3
   draw: ^1.0.2
+  url_launcher: ^6.1.4
+  flutter_speech: ^2.0.0
 
 dev_dependencies:
   flutter_test:

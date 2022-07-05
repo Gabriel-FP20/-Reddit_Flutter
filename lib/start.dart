@@ -31,7 +31,7 @@ class _StartState extends State<Start> {
 
   Future<void> _fetch() async {
     final stream =
-        reddit.subreddit(widget.subreddit).hot(limit: 16).asBroadcastStream();
+        reddit.subreddit(widget.subreddit).hot().asBroadcastStream();
     posts.clear();
 
     stream.listen((content) {
@@ -105,8 +105,20 @@ class _StartState extends State<Start> {
                           Divider(),
                           Row(
                             children: [
+                              SizedBox(
+                                  child: Icon(
+                                Icons.arrow_upward,
+                                size: 20,
+                              )),
+                              SizedBox(width: 10.0),
                               Text(posts[i].score.toString()),
-                              SizedBox(width: 100.0),
+                              SizedBox(width: 50.0),
+                              SizedBox(
+                                  child: Icon(
+                                Icons.comment,
+                                size: 20,
+                              )),
+                              SizedBox(width: 10.0),
                               Text(posts[i].numComments.toString()),
                             ],
                           ),

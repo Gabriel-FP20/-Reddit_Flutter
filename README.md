@@ -1,16 +1,63 @@
-# estudos_app
+# Desafio FPF - Feed Tecnologia
 
-A new Flutter application.
+Um projeto Flutter que exibe os posts mais relevantes de um subreddit do [Reddit](https://www.reddit.com/). 
 
-## Getting Started
+## Instalação
 
-This project is a starting point for a Flutter application.
+Para instalação do framework Flutter, siga as instruções do link a seguir:
 
-A few resources to get you started if this is your first Flutter project:
+```
+https://docs.flutter.dev/get-started/install
+```
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Após configurar o Flutter, siga os passos:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**Passo 1: Clonando Repositório**
+
+Realize a clonagem do repositório usando o seguinte link:
+
+```
+https://github.com/Gabriel-FP20/estudos_app
+```
+
+**Passo 2: Baixando Depedências**
+
+Abra a raiz do projeto e execute a seguinte linha no terminal de comando:
+
+```
+flutter pub get 
+```
+
+**Passo 3: Executando o projeto**
+
+Para rodar o projeto, execute a seguinte linha no terminal de comando:
+
+```
+flutter run 
+```
+
+## Referências
+
+**Bibliotecas Utilizadas**
+
+As funcionalidades fundamentais utilizaram as seguintes bibliotecas, cuja documentação está disponível no https://pub.dev.
+
+    // Leitura de QRCode
+    import 'QRCode.dart' 
+    // Reconhecimento de voz
+    import 'package:flutter_speech/flutter_speech.dart' 
+    // Wrapper para API Reddit
+    import 'package:draw/draw.dart';
+
+**Tutorials**
+
+- https://acervolima.com/flutter-qr-code-scanner-e-qr-generator/
+
+
+## Como Usar
+
+Ao abrir o aplicativo, digite o subreddit desejado na caixa de texto! Você pode utilizar a leitura por QRCode ou Digitação por voz.
+
+Ao clicar no botão "Search", surgirá uma lista com os pots mais relevantes daquele subreddit. 
+
+Ao clicar em um post, você será redirecionado para a tela de postagem e comentários daquele post. 
