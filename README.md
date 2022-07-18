@@ -1,4 +1,4 @@
-# Desafio FPF - Feed Tecnologia
+# Desafio Feed Tecnologia
 
 Um projeto Flutter que exibe os posts mais relevantes de um subreddit do [Reddit](https://www.reddit.com/). 
 
