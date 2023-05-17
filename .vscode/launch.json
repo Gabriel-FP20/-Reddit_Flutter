@@ -5,21 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "estudos_app",
+            "name": "reddit_flutter",
             "request": "launch",
-            "args": [
-                "--no-sound-null-safety"
-            ],
             "type": "dart"
         },
         {
-            "name": "estudos_app (profile mode)",
+            "name": "reddit_flutter (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "estudos_app (release mode)",
+            "name": "reddit_flutter (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
